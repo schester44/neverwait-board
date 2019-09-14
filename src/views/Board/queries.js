@@ -6,6 +6,7 @@ export const appointmentsSubscription = gql`
 			employeeId
 			isNewRecord
 			appointment {
+				deleted
 				id
 				status
 				duration

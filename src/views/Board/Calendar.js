@@ -7,11 +7,9 @@ import Container from './CalendarContainer'
 
 import Header from './Header'
 import Event from './Event'
-import Alert from './Alert'
 import { subMinutes } from 'date-fns/esm'
 
 import { appointmentsSubscription, locationQuery } from './queries'
-import { setState } from 'expect/build/jestMatchersObject'
 
 const localizer = momentLocalizer(moment)
 
@@ -29,18 +27,30 @@ const components = {
 	header: Header
 }
 
-const eventPropGetter = event => {
+const eventPropGetter = _ => {
 	return {
 		style: {
-			opacity: 1,
-			background: 'rgba(85, 82, 181, 1.0)'
+			background: 'transparent'
 		}
 	}
 }
 
-const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appointments }) => {
-	const [alert, setAlert] = React.useState({ visible: false, appointment: undefined })
+const playSound = () => {
+	console.log('playing sound')
+	var context = new AudioContext()
+	var o = context.createOscillator()
+	var g = context.createGain()
+	o.connect(g)
+	g.connect(context.destination)
+	o.start(0)
+	o.type = 'sine'
+	o.frequency.value = 830.6
 
+	g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 0.04)
+	// o.stop()
+}
+
+const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appointments }) => {
 	useSubscription(appointmentsSubscription, {
 		variables: { locationId },
 		shouldResubscribe: true,
@@ -77,24 +87,11 @@ const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appo
 					location
 				}
 			})
-
-			if (isNewRecord) {
-				setState({
-					visible: true,
-					appointment: subscriptionData.data.AppointmentsChange
-				})
-			}
 		}
 	})
 
-	const handleClose = React.useCallback(() => {
-		setAlert({ visible: false, appointment: undefined })
-	}, [])
-
 	return (
 		<Container>
-			{alert.visible && <Alert appointment={alert.appointment} onClose={handleClose} />}
-
 			<BigCalendar
 				eventPropGetter={eventPropGetter}
 				localizer={localizer}

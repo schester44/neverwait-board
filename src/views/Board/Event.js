@@ -1,8 +1,20 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import format from 'date-fns/format'
 
 import { getCustomerField } from '../../helpers/getCustomerInfo'
+
+const fadeIn = keyframes`
+	from {
+		opacity: 0;
+		transform: scale(0.2);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+`
 
 const sourceColor = {
 	default: '#E9CF4B',
@@ -66,6 +78,10 @@ const Container = styled('div')`
 	padding: 0 20px;
 	overflow: hidden;
 	line-height: 28px;
+	background: rgba(85, 82, 181, 1);
+	opacity: 0;
+	animation: ${fadeIn} 1s ease forwards;
+	border-radius: 4px;
 
 	.details {
 		display: flex;

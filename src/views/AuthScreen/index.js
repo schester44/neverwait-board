@@ -76,7 +76,7 @@ const AuthScreen = () => {
 			<div className="box">
 				<Input type="password" onChange={({ target: { value } }) => setCode(value)} placeholder="Enter auth code" />
 
-				<Button onClick={handleSubmit} disabled={code.length === 0}>
+				<Button onClick={handleSubmit} disabled={code.length === 0 || loading}>
 					Submit
 				</Button>
 			</div>
