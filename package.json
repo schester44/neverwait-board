@@ -2,6 +2,7 @@
 	"name": "board",
 	"version": "0.1.0",
 	"private": true,
+	"homepage": "https://board.neverwait.app",
 	"dependencies": {
 		"@apollo/react-hooks": "^3.1.0",
 		"apollo-cache-inmemory": "^1.6.3",

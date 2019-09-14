@@ -9,10 +9,11 @@ export default styled('div')`
 
 	.rbc-header {
 		padding: 15px;
-		font-size: 16px;
+		font-size: 28px;
 		color: white;
 		font-family: Domus;
 	}
+
 	.rbc-row-resource .rbc-header {
 		border: none !important;
 	}
@@ -84,10 +85,9 @@ export default styled('div')`
 	.rbc-time-gutter .rbc-timeslot-group .rbc-label {
 		position: relative;
 		top: -12px;
-		font-size: 12px;
 		font-weight: 500;
 		color: #fff;
-		font-size: 28px;
+		font-size: 22px;
 	}
 
 	.rbc-time-gutter .rbc-timeslot-group:first-of-type .rbc-label {
