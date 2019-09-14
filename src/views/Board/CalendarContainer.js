@@ -8,7 +8,7 @@ export default styled('div')`
 	color: black;
 
 	.rbc-header {
-		padding: 15px;
+		padding: 5px;
 		font-size: 28px;
 		color: white;
 		font-family: Domus;
@@ -50,7 +50,7 @@ export default styled('div')`
 	}
 
 	.rbc-timeslot-group {
-		min-height: 300px !important;
+		min-height: 200px !important;
 	}
 
 	.rbc-today .rbc-timeslot-group {
@@ -87,7 +87,7 @@ export default styled('div')`
 		top: -12px;
 		font-weight: 500;
 		color: #fff;
-		font-size: 22px;
+		font-size: 18px;
 	}
 
 	.rbc-time-gutter .rbc-timeslot-group:first-of-type .rbc-label {

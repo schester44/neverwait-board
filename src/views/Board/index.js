@@ -12,13 +12,15 @@ const Container = styled('div')`
 		position: fixed;
 		bottom: 20px;
 		right: 20px;
-		background: rgba(71, 74, 76, 0.4);
+		background: rgba(45, 48, 49, 1);
 		border-radius: 10px;
 		font-family: Domus;
 		color: rgba(237, 209, 129, 1);
 		font-size: 20px;
 		padding: 5px 20px;
 		text-align: center;
+		z-index: 9999;
+		box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.2);
 	}
 `
 
@@ -32,10 +34,24 @@ const Placeholder = styled('div')`
 `
 
 const Board = () => {
-	const [{ startTime, endTime }, setState] = React.useState({
+	const [{ currentTime, startTime, endTime }, setState] = React.useState({
+		currentTime: new Date(),
 		startTime: startOfDay(new Date()),
 		endTime: endOfDay(new Date())
 	})
+
+	// TODO: This could cause the useSubscription to miss an update
+	React.useEffect(() => {
+		const timer = window.setInterval(() => {
+			setState({
+				currentTime: new Date(),
+				startTime: startOfDay(new Date()),
+				endTime: endOfDay(new Date())
+			})
+		}, 60 * 1000 * 5)
+
+		return () => window.clearInterval(timer)
+	}, [])
 
 	const { data: { location } = {}, loading } = useQuery(locationQuery, {
 		variables: {
@@ -46,12 +62,15 @@ const Board = () => {
 
 	if (loading) return <Placeholder>Loading...</Placeholder>
 
+	console.log('refreshing,', currentTime)
+
 	return (
 		<Container>
 			<div className="signature">NeverWait</div>
 
 			{location?.employees ? (
 				<Calendar
+					currentTime={currentTime}
 					startTime={startTime}
 					endTime={endTime}
 					locationId={location.id}

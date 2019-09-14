@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import format from 'date-fns/format'
 
 import { getCustomerField } from '../../helpers/getCustomerInfo'
-import { parseISO } from 'date-fns'
 
 const sourceColor = {
 	default: '#E9CF4B',
@@ -15,6 +14,8 @@ const sourceColor = {
 const sourceStyles = ({ sourceType }) =>
 	sourceType !== 'default' &&
 	`
+	padding-left: 10px;
+
 	.jewel {
 		background-color: ${sourceColor[sourceType]};
 	}
@@ -23,33 +24,36 @@ const sourceStyles = ({ sourceType }) =>
 const bigStyles = ({ isBig }) =>
 	isBig &&
 	`
-	line-height: 28px;
+	line-height: 34px;
 
 	.duration {
-		font-size: 22px;
+		font-size: 16px;
 		font-weight: 500;
 		opacity: 1;
 		text-align: right;
 		font-weight: 100;
 	}
 	
+	.details {
+		line-height: 1.2;
+	}
 	
 	.time {
-		font-size: 22px;
+		font-size: 16px;
 		margin: 0;
 		font-weight: 700;
 		opacity: 1;
+		line-height: 1.2;
 	}
 
 	.name {
-		font-size: 28px;
+		font-size: 24px;
 	}
 
 	.service {
 		font-weight: 100;
-		font-size: 24px;
+		font-size: 16px;
 		white-space: nowrap;
-		line-height: 28px;
 	}
 `
 
@@ -59,9 +63,9 @@ const Container = styled('div')`
 	justify-content: space-between;
 	align-items: center;
 	height: 100%;
-	padding: 0 10px;
+	padding: 0 20px;
 	overflow: hidden;
-	line-height: 14px;
+	line-height: 28px;
 
 	.details {
 		display: flex;
@@ -75,7 +79,6 @@ const Container = styled('div')`
 
 	.time {
 		font-size: 12px;
-		margin-right: 4px;
 		white-space: nowrap;
 		text-transform: lowercase;
 	}
@@ -83,6 +86,7 @@ const Container = styled('div')`
 	.duration {
 		font-size: 12px;
 		opacity: 0.5;
+		line-height: 1;
 	}
 
 	.name {
@@ -95,26 +99,20 @@ const Container = styled('div')`
 		font-weight: 100;
 		font-size: 12px;
 		white-space: nowrap;
+		line-height: 1;
 	}
 
 	.jewel {
-		margin-right: 8px;
+		margin-right: 10px;
 		left: 0;
-		width: 20px;
-		height: 20px;
+		width: 10px;
+		height: 10px;
 		border-radius: 50%;
 	}
 
 	${sourceStyles};
 	${bigStyles};
 `
-
-const readable = {
-	onlineappointment: 'via Online Appointment',
-	onlinecheckin: 'via Online Check-in',
-	walkin: 'via Walk-in',
-	default: 'manually'
-}
 
 const CustomEvent = ({ event }) => {
 	const name = event.customer
@@ -125,9 +123,9 @@ const CustomEvent = ({ event }) => {
 	const sourceType = event?.source?.type || 'default'
 
 	return (
-		<Container isBig={event.duration > 15} duration={event.duration} sourceType={sourceType}>
+		<Container isBig={event.duration >= 15} duration={event.duration} sourceType={sourceType}>
 			<div className="left">
-				<div className="jewel" />
+				{sourceType !== 'default' && <div className="jewel" />}
 
 				<div>
 					<div className="details">

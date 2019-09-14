@@ -7,9 +7,11 @@ import Container from './CalendarContainer'
 
 import Header from './Header'
 import Event from './Event'
+import Alert from './Alert'
 import { subMinutes } from 'date-fns/esm'
 
 import { appointmentsSubscription, locationQuery } from './queries'
+import { setState } from 'expect/build/jestMatchersObject'
 
 const localizer = momentLocalizer(moment)
 
@@ -36,7 +38,9 @@ const eventPropGetter = event => {
 	}
 }
 
-const Calendar = ({ startTime, endTime, locationId, employees, appointments }) => {
+const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appointments }) => {
+	const [alert, setAlert] = React.useState({ visible: false, appointment: undefined })
+
 	useSubscription(appointmentsSubscription, {
 		variables: { locationId },
 		shouldResubscribe: true,
@@ -73,18 +77,31 @@ const Calendar = ({ startTime, endTime, locationId, employees, appointments }) =
 					location
 				}
 			})
+
+			if (isNewRecord) {
+				setState({
+					visible: true,
+					appointment: subscriptionData.data.AppointmentsChange
+				})
+			}
 		}
 	})
 
+	const handleClose = React.useCallback(() => {
+		setAlert({ visible: false, appointment: undefined })
+	}, [])
+
 	return (
 		<Container>
+			{alert.visible && <Alert appointment={alert.appointment} onClose={handleClose} />}
+
 			<BigCalendar
 				eventPropGetter={eventPropGetter}
 				localizer={localizer}
 				events={appointments}
 				startAccessor={startAccessor}
 				endAccessor={endAccessor}
-				scrollToTime={subMinutes(new Date(), 30)}
+				scrollToTime={subMinutes(currentTime, 30)}
 				resources={employees}
 				resourceAccessor={resourceAccessor}
 				resourceIdAccessor="id"
@@ -92,8 +109,7 @@ const Calendar = ({ startTime, endTime, locationId, employees, appointments }) =
 				view={'day'}
 				onNavigate={noop}
 				onView={noop}
-				// views={availableViews}
-				date={new Date()}
+				date={currentTime}
 				timeslots={12}
 				step={5}
 				formats={{ timeGutterFormat: 'h:mm a' }}
