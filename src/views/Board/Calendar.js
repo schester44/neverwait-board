@@ -36,18 +36,16 @@ const eventPropGetter = _ => {
 }
 
 const playSound = () => {
-	console.log('playing sound')
-	var context = new AudioContext()
-	var o = context.createOscillator()
-	var g = context.createGain()
+	const context = new AudioContext()
+	const o = context.createOscillator()
+	const g = context.createGain()
 	o.connect(g)
 	g.connect(context.destination)
 	o.start(0)
 	o.type = 'sine'
-	o.frequency.value = 830.6
+	o.frequency.value = 430.6
 
-	g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 0.04)
-	// o.stop()
+	g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + .5)
 }
 
 const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appointments }) => {
@@ -68,9 +66,11 @@ const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appo
 			})
 
 			const isDeleted = deleted || appointment.deleted
-			
+
 			// if we're updating the record then do nothing, let apollo handle it
 			if (!isNewRecord && !isDeleted) return
+
+			playSound()
 
 			const location = {
 				...cache.location,
