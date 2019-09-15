@@ -6,15 +6,17 @@ export const appointmentsSubscription = gql`
 			employeeId
 			isNewRecord
 			appointment {
-				deleted
 				id
 				status
 				duration
 				startTime
 				endTime
+				deleted
+
 				employee {
 					id
 				}
+				
 				services {
 					id
 					name
