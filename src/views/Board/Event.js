@@ -83,7 +83,7 @@ const Container = styled('div')`
 	overflow: hidden;
 	line-height: 28px;
 	background: rgba(85, 82, 181, 1);
-	animation: ${fadeIn} 1s ease forwards;
+	animation: ${fadeIn} .5s ease forwards;
 	border-radius: 4px;
 
 	.details {
