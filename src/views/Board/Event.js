@@ -1,17 +1,15 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
-import format from 'date-fns/format'
-
+import styled, { keyframes, css } from 'styled-components'
 import { getCustomerField } from '../../helpers/getCustomerInfo'
+
+import { isAfter, format, isBefore, addHours, subHours } from 'date-fns'
 
 const fadeIn = keyframes`
 	from {
-		opacity: 0;
 		transform: scale(0.2);
 	}
 
 	to {
-		opacity: 1;
 		transform: scale(1);
 	}
 `
@@ -69,6 +67,12 @@ const bigStyles = ({ isBig }) =>
 	}
 `
 
+const pastStyles = ({ isPast }) =>
+	isPast &&
+	css`
+		background: rgba(55, 59, 60, 1);
+	`
+
 const Container = styled('div')`
 	position: relative;
 	display: flex;
@@ -79,7 +83,6 @@ const Container = styled('div')`
 	overflow: hidden;
 	line-height: 28px;
 	background: rgba(85, 82, 181, 1);
-	opacity: 0;
 	animation: ${fadeIn} 1s ease forwards;
 	border-radius: 4px;
 
@@ -109,6 +112,11 @@ const Container = styled('div')`
 		font-weight: 700;
 		font-size: 14px;
 		white-space: nowrap;
+		${({ blurName }) =>
+			blurName &&
+			`
+			filter: blur(5px);
+		`}
 	}
 
 	.service {
@@ -128,18 +136,28 @@ const Container = styled('div')`
 
 	${sourceStyles};
 	${bigStyles};
+	${pastStyles};
 `
 
 const CustomEvent = ({ event }) => {
+	const isFuture = isBefore(new Date(event.startTime), addHours(new Date(), 2))
+	const isPast = isAfter(subHours(new Date(), 1), new Date(event.endTime))
+
 	const name = event.customer
-		? `${getCustomerField(event.customer, 'firstName') || '(No Name)'} ${getCustomerField(event.customer, 'lastName') ||
-				''}`
+		? `${getCustomerField(event.customer, 'firstName') || '(No Name)'} ${
+				!isFuture && !isPast ? '' : getCustomerField(event.customer, 'lastName') || ''
+		  }`
 		: '(No Name)'
 
 	const sourceType = event?.source?.type || 'default'
 
 	return (
-		<Container isBig={event.duration >= 15} duration={event.duration} sourceType={sourceType}>
+		<Container
+			isPast={isAfter(new Date(), new Date(event.endTime))}
+			isBig={event.duration >= 15}
+			duration={event.duration}
+			sourceType={sourceType}
+		>
 			<div className="left">
 				{sourceType !== 'default' && <div className="jewel" />}
 
