@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { locationQuery } from './queries'
 import { startOfDay, endOfDay } from 'date-fns'
 import Calendar from './Calendar'
+import Clock from './Clock'
 
 const Container = styled('div')`
 	color: white;
@@ -66,6 +67,7 @@ const Board = () => {
 
 	return (
 		<Container>
+			<Clock />
 			<div className="signature">NeverWait</div>
 
 			{location?.employees ? (

@@ -31,6 +31,7 @@ const Header = styled('div')`
 	}
 `
 const now = new Date()
+
 const TimelineHeader = props => {
 	const isToday = isSameDay(now, parseISO(props.date))
 

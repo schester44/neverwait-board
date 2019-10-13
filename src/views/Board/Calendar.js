@@ -43,9 +43,9 @@ const playSound = () => {
 	g.connect(context.destination)
 	o.start(0)
 	o.type = 'sine'
-	o.frequency.value = 430.6
+	o.frequency.value = 630.6
 
-	g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + .5)
+	g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 0.5)
 }
 
 const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appointments }) => {
