@@ -13,7 +13,7 @@ const onErrorLink = onError(({ graphQLErrors, networkError }) => {
 	}
 })
 
-const AUTH_TOKEN_KEY = 'AuthToken'
+export const AUTH_TOKEN_KEY = 'AuthToken'
 
 const AuthLink = new ApolloLink((operation, forward) => {
 	const token = localStorage.getItem(AUTH_TOKEN_KEY)

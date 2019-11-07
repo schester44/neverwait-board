@@ -6,6 +6,8 @@ import { startOfDay, endOfDay } from 'date-fns'
 import Calendar from './Calendar'
 import Clock from './Clock'
 
+import { AUTH_TOKEN_KEY } from '../../client'
+
 const Container = styled('div')`
 	color: white;
 
@@ -63,12 +65,17 @@ const Board = () => {
 
 	if (loading) return <Placeholder>Loading...</Placeholder>
 
-	console.log('refreshing,', currentTime)
+	const logout = () => {
+		localStorage.removeItem(AUTH_TOKEN_KEY)
+		window.location.reload()
+	}
 
 	return (
 		<Container>
 			<Clock />
-			<div className="signature">NeverWait</div>
+			<div onClick={logout} className="signature">
+				NeverWait
+			</div>
 
 			{location?.employees ? (
 				<Calendar
