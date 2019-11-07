@@ -41,7 +41,7 @@ export const appointmentsSubscription = gql`
 `
 
 export const locationQuery = gql`
-	query location($startTime: String!, $endTime: String!) {
+	query location($startTime: DateTime!, $endTime: DateTime!) {
 		location {
 			company {
 				name
