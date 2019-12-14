@@ -31,9 +31,7 @@ const Container = styled('div')`
 
 export const authWithToken = gql`
 	mutation authWithToken($key: String!) {
-		authWithToken(key: $key) {
-			token
-		}
+		authWithToken(key: $key)
 	}
 `
 
@@ -53,20 +51,14 @@ const AuthScreen = () => {
 	const handleSubmit = async () => {
 		if (code.length === 0) return false
 
-		try {
-			const {
-				data: { authWithToken }
-			} = await login({
-				variables: {
-					key: code
-				}
-			})
-
-			if (authWithToken && authWithToken.token) {
-				localStorage.setItem('AuthToken', authWithToken.token)
-				window.location.reload()
+		await login({
+			variables: {
+				key: code
 			}
-		} catch (e) {}
+		})
+
+		localStorage.setItem('nw-board-sess', true)
+		window.location.reload()
 	}
 
 	return (
@@ -74,7 +66,11 @@ const AuthScreen = () => {
 			{error && error.graphQLErrors.length > 0 && <Error>{error.graphQLErrors[0].message}</Error>}
 
 			<div className="box">
-				<Input type="password" onChange={({ target: { value } }) => setCode(value)} placeholder="Enter auth code" />
+				<Input
+					type="password"
+					onChange={({ target: { value } }) => setCode(value)}
+					placeholder="Enter auth code"
+				/>
 
 				<Button onClick={handleSubmit} disabled={code.length === 0 || loading}>
 					Submit

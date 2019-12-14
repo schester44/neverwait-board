@@ -6,8 +6,6 @@ import { startOfDay, endOfDay } from 'date-fns'
 import Calendar from './Calendar'
 import Clock from './Clock'
 
-import { AUTH_TOKEN_KEY } from '../../client'
-
 const Container = styled('div')`
 	color: white;
 
@@ -15,13 +13,14 @@ const Container = styled('div')`
 		position: fixed;
 		bottom: 20px;
 		right: 20px;
-		background: rgba(45, 48, 49, 1);
+		background: rgba(45, 48, 49, 0.4);
 		border-radius: 10px;
 		font-family: Domus;
 		color: rgba(237, 209, 129, 1);
-		font-size: 20px;
-		padding: 5px 20px;
-		text-align: center;
+		font-size: 18px;
+		padding: 10px;
+		text-align: right;
+		line-height: 1;
 		z-index: 9999;
 		box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.2);
 	}
@@ -66,15 +65,17 @@ const Board = () => {
 	if (loading) return <Placeholder>Loading...</Placeholder>
 
 	const logout = () => {
-		localStorage.removeItem(AUTH_TOKEN_KEY)
+		localStorage.removeItem('nw-board-sess')
 		window.location.reload()
 	}
 
 	return (
 		<Container>
-			<Clock />
 			<div onClick={logout} className="signature">
 				NeverWait
+				<div>
+					<Clock />
+				</div>
 			</div>
 
 			{location?.employees ? (

@@ -3,7 +3,7 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components'
 import { render } from 'react-dom'
 import { ApolloProvider } from '@apollo/react-hooks'
 import App from './App'
-import client from './client'
+import client from './apollo-client'
 
 import './index.css'
 

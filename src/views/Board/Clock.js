@@ -12,7 +12,19 @@ const Clock = () => {
 		return () => window.clearInterval(timer)
 	}, [])
 
-	return <div style={{ position: 'absolute', top: 10, right: 10, fontSize: 32 }}>{format(time, 'h:mm a')}</div>
+	return (
+		<span
+			style={{
+				textTransform: 'lowercase',
+				fontFamily: 'sans-serif',
+				color: 'white',
+				fontSize: 14,
+				fontWeight: 700
+			}}
+		>
+			{format(time, 'h:mm a')}
+		</span>
+	)
 }
 
 export default Clock
