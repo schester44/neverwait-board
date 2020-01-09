@@ -65,7 +65,10 @@ const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appo
 				}
 			})
 
-			const isDeleted = appointment.status === 'deleted'
+			const isDeleted =
+				appointment.status === 'deleted' ||
+				appointment.status === 'canceled' ||
+				appointment.status === 'noshow'
 
 			// if we're updating the record then do nothing, let apollo handle it
 			if (!isNewRecord && !isDeleted) return

@@ -9,11 +9,13 @@ import { ApolloLink, split } from 'apollo-link'
 import { getMainDefinition } from 'apollo-utilities'
 
 const onErrorLink = onError(({ graphQLErrors, networkError }) => {
-	graphQLErrors.forEach(error => {
-		if (error.name === 'AuthenticationError') {
-			localStorage.removeItem('nw-board-sess')
-		}
-	})
+	if (graphQLErrors) {
+		graphQLErrors.forEach(error => {
+			if (error.name === 'AuthenticationError') {
+				localStorage.removeItem('nw-board-sess')
+			}
+		})
+	}
 
 	if (networkError?.result?.errors) {
 		networkError.result.errors.forEach(console.error)
