@@ -17,55 +17,52 @@ const fadeIn = keyframes`
 const sourceColor = {
 	default: '#E9CF4B',
 	onlineappointment: '#66ce89',
-	onlinecheckin: '#66ce89',
+	onlinecheckin: 'rgba(242, 158, 82, 1.0)',
 	walkin: '#CE66AB'
 }
 
 const sourceStyles = ({ sourceType }) =>
 	sourceType !== 'default' &&
-	`
-	padding-left: 10px;
+	css`
+		padding-left: 10px;
 
-	.jewel {
-		background-color: ${sourceColor[sourceType]};
-	}
-`
+		.jewel {
+			background-color: ${sourceColor[sourceType]};
+		}
+	`
 
 const bigStyles = ({ isBig }) =>
 	isBig &&
+	css`
+		line-height: 34px;
+
+		.duration {
+			font-size: 16px;
+			font-weight: 500;
+			text-align: right;
+			font-weight: 100;
+			opacity: 0.6;
+		}
+
+		.time {
+			font-size: 16px;
+			margin: 0;
+			font-weight: 700;
+			line-height: 20px;
+		}
+
+		.name {
+			font-size: 24px;
+			line-height: 27px;
+		}
+
+		.service {
+			font-weight: 100;
+			font-size: 16px;
+			white-space: nowrap;
+			opacity: 0.6;
+		}
 	`
-	line-height: 34px;
-
-	.duration {
-		font-size: 16px;
-		font-weight: 500;
-		opacity: 1;
-		text-align: right;
-		font-weight: 100;
-	}
-	
-	.details {
-		line-height: 1.2;
-	}
-	
-	.time {
-		font-size: 16px;
-		margin: 0;
-		font-weight: 700;
-		opacity: 1;
-		line-height: 1.2;
-	}
-
-	.name {
-		font-size: 24px;
-	}
-
-	.service {
-		font-weight: 100;
-		font-size: 16px;
-		white-space: nowrap;
-	}
-`
 
 const pastStyles = ({ isPast }) =>
 	isPast &&
@@ -83,47 +80,46 @@ const Container = styled('div')`
 	overflow: hidden;
 	line-height: 28px;
 	background: rgba(85, 82, 181, 1);
-	animation: ${fadeIn} .5s ease forwards;
+	animation: ${fadeIn} 0.5s ease forwards;
 	border-radius: 4px;
 
 	.details {
 		display: flex;
 		align-items: center;
+		height: 100%;
 	}
 
 	.left {
+		height: 100%;
 		display: flex;
 		align-items: center;
 	}
 
 	.time {
 		font-size: 12px;
+		line-height: 15px;
 		white-space: nowrap;
 		text-transform: lowercase;
 	}
 
 	.duration {
 		font-size: 12px;
-		opacity: 0.5;
-		line-height: 1;
+		line-height: 15px;
 	}
 
 	.name {
 		font-weight: 700;
-		font-size: 14px;
+		font-size: 13px;
+		line-height: 17px;
+
 		white-space: nowrap;
-		${({ blurName }) =>
-			blurName &&
-			`
-			filter: blur(5px);
-		`}
 	}
 
 	.service {
 		font-weight: 100;
 		font-size: 12px;
 		white-space: nowrap;
-		line-height: 1;
+		line-height: 15px;
 	}
 
 	.jewel {
@@ -166,13 +162,18 @@ const CustomEvent = ({ event }) => {
 						<div className="name">{name}</div>
 					</div>
 					{event.duration > 10 && event.services?.[0] && (
-						<div className="service">{event.services.length > 1 ? 'Multiple Services' : event.services?.[0]?.name}</div>
+						<div className="service">
+							{event.services.length > 1 ? 'Multiple Services' : event.services?.[0]?.name}
+						</div>
 					)}
 				</div>
 			</div>
 			<div className="time">
 				{format(new Date(event.startTime), 'h:mm a')} - {format(new Date(event.endTime), 'h:mm a')}
-				{event.duration > 10 && <div className="duration">{event.duration} mins</div>}
+				<div className="duration">
+					{event.price && <span>${event.price} - </span>}{' '}
+					{event.duration && <span>{event.duration} mins</span>}
+				</div>
 			</div>
 		</Container>
 	)

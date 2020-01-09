@@ -1,94 +1,101 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag'
 
 export const appointmentsSubscription = gql`
-  subscription onAppointmentsChange($locationId: ID!) {
-    AppointmentsChange(locationId: $locationId) {
-      employeeId
-      isNewRecord
-      appointment {
-        id
-        status
-        duration
-        startTime
-        endTime
+	subscription onAppointmentsChange($locationId: ID!) {
+		AppointmentsChange(locationId: $locationId) {
+			employeeId
+			isNewRecord
+			appointment {
+				id
+				status
+				duration
+				startTime
+				endTime
 
-        employee {
+				employee {
+					id
+				}
+
+				services {
+					id
+					name
+				}
+
+				source {
           id
-        }
+					type
+				}
 
-        services {
+				customer {
           id
-          name
-        }
-
-        source {
-          type
-        }
-
-        customer {
-          firstName
-          lastName
-          profile {
-            firstName
-            lastName
-            phoneNumber
-          }
-        }
-      }
-    }
-  }
-`;
+					firstName
+					lastName
+					profile {
+						firstName
+						lastName
+						phoneNumber
+					}
+				}
+			}
+		}
+	}
+`
 
 export const locationQuery = gql`
-  query location($startTime: DateTime!, $endTime: DateTime!) {
-    location {
-      company {
-        name
-      }
-      id
-      name
+	query location($startTime: DateTime!, $endTime: DateTime!) {
+		location {
+			company {
+				name
+			}
+			id
+			name
 
-      appointments(
-        input: {
-          where: {
-            status: { eq: confirmed }
-            startTime: { gte: $startTime }
-            endTime: { lte: $endTime }
-          }
-        }
-      ) {
-        id
-        status
-        duration
-        startTime
-        endTime
-        employee {
+			appointments(
+				input: {
+					where: {
+						status: { eq: confirmed }
+						startTime: { gte: $startTime }
+						endTime: { lte: $endTime }
+					}
+				}
+			) {
+				id
+				status
+				price
+				duration
+				startTime
+				endTime
+
+				employee {
+					id
+				}
+
+				services {
+					id
+					name
+				}
+
+				source {
+					id
+					type
+				}
+
+				customer {
           id
-        }
-        services {
-          id
-          name
-        }
+					firstName
+					lastName
+					profile {
+						firstName
+						lastName
+						phoneNumber
+					}
+				}
+			}
 
-        source {
-          type
-        }
-
-        customer {
-          firstName
-          lastName
-          profile {
-            firstName
-            lastName
-            phoneNumber
-          }
-        }
-      }
-
-      employees(input: { where: { bookingEnabled: true } }) {
-        id
-        firstName
-      }
-    }
-  }
-`;
+			employees(input: { where: { bookingEnabled: true } }) {
+				id
+				firstName
+			}
+		}
+	}
+`
