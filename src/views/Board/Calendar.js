@@ -53,9 +53,11 @@ const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appo
 		variables: { locationId },
 		shouldResubscribe: true,
 		onSubscriptionData: ({ client, subscriptionData }) => {
-			if (!subscriptionData.data.AppointmentsChange?.appointment) return
+			if (!subscriptionData.data?.SchedulingChange) return
 
-			const { appointment, isNewRecord } = subscriptionData.data.AppointmentsChange
+			const { payload, action } = subscriptionData.data.SchedulingChange
+
+			const { appointment, blockedTime } = payload
 
 			const cache = client.readQuery({
 				query: locationQuery,
@@ -65,30 +67,39 @@ const Calendar = ({ currentTime, startTime, endTime, locationId, employees, appo
 				}
 			})
 
-			const isDeleted =
-				appointment.status === 'deleted' ||
-				appointment.status === 'canceled' ||
-				appointment.status === 'noshow'
+			const isDeleted = appointment
+				? appointment.status === 'deleted' ||
+				  appointment.status === 'canceled' ||
+				  appointment.status === 'noshow'
+				: action === 'DELETED'
 
 			// if we're updating the record then do nothing, let apollo handle it
-			if (!isNewRecord && !isDeleted) return
+			if (action === 'UPDATED' && !isDeleted) return
 
 			playSound()
-
-			const location = {
-				...cache.location,
-				appointments: isDeleted
-					? cache.location.appointments.filter(appt => appt.id !== appointment.id)
-					: cache.location.appointments.concat([appointment])
-			}
 
 			client.writeQuery({
 				query: locationQuery,
 				variables: { startTime, endTime },
-				data: {
-					...cache,
-					location
-				}
+				data: produce(cache, draft => {
+					const { appointments, blockedTimes } = draft.location
+
+					if (appointment) {
+						if (isDeleted) {
+							draft.location.appointments = appointments.filter(({ id }) => id !== appointment.id)
+						} else {
+							draft.location.appointments.push(appointment)
+						}
+					}
+
+					if (blockedTime) {
+						if (isDeleted) {
+							draft.location.blockedTimes = blockedTimes.filter(({ id }) => id !== blockedTime.id)
+						} else {
+							draft.location.blockedTimes.push(blockedTime)
+						}
+					}
+				})
 			})
 		}
 	})

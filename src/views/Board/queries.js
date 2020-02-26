@@ -2,9 +2,15 @@ import gql from 'graphql-tag'
 
 export const appointmentsSubscription = gql`
 	subscription onAppointmentsChange($locationId: ID!) {
-		AppointmentsChange(locationId: $locationId) {
+		SchedulingChange(locationId: $locationId) {
+			action
 			employeeId
-			isNewRecord
+			locationId
+			blockedTime {
+				id
+				startTime
+				endTime
+			}
 			appointment {
 				id
 				status
@@ -22,12 +28,12 @@ export const appointmentsSubscription = gql`
 				}
 
 				source {
-          id
+					id
 					type
 				}
 
 				customer {
-          id
+					id
 					firstName
 					lastName
 					profile {
@@ -49,7 +55,13 @@ export const locationQuery = gql`
 			}
 			id
 			name
-
+			blockedTimes(
+				input: { where: { startTime: { gte: $startTime }, endTime: { lte: $endTime } } }
+			) {
+				id
+				startTime
+				endTime
+			}
 			appointments(
 				input: {
 					where: {
@@ -81,7 +93,7 @@ export const locationQuery = gql`
 				}
 
 				customer {
-          id
+					id
 					firstName
 					lastName
 					profile {
