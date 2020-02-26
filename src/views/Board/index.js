@@ -85,7 +85,7 @@ const Board = () => {
 					endTime={endTime}
 					locationId={location.id}
 					employees={location.employees}
-					appointments={location.appointments}
+					appointments={[...location.blockedTimes, ...location.appointments]}
 				/>
 			) : (
 				<Placeholder>Error</Placeholder>

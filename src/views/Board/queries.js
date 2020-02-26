@@ -6,40 +6,43 @@ export const appointmentsSubscription = gql`
 			action
 			employeeId
 			locationId
-			blockedTime {
-				id
-				startTime
-				endTime
-			}
-			appointment {
-				id
-				status
-				duration
-				startTime
-				endTime
-
-				employee {
+			payload {
+				blockedTime {
 					id
+					startTime
+					endTime
+					employeeId
 				}
-
-				services {
+				appointment {
 					id
-					name
-				}
+					status
+					duration
+					startTime
+					endTime
 
-				source {
-					id
-					type
-				}
+					employee {
+						id
+					}
 
-				customer {
-					id
-					firstName
-					lastName
-					profile {
+					services {
+						id
+						name
+					}
+
+					source {
+						id
+						type
+					}
+
+					customer {
+						id
 						firstName
 						lastName
-						phoneNumber
+						profile {
+							firstName
+							lastName
+							phoneNumber
+						}
 					}
 				}
 			}
@@ -61,6 +64,7 @@ export const locationQuery = gql`
 				id
 				startTime
 				endTime
+				employeeId
 			}
 			appointments(
 				input: {

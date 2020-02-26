@@ -3,6 +3,7 @@ import styled, { keyframes, css } from 'styled-components'
 import { getCustomerField } from '../../helpers/getCustomerInfo'
 
 import { isAfter, format, isBefore, addHours, subHours } from 'date-fns'
+import BlockedTime from './BlockedTime'
 
 const fadeIn = keyframes`
 	from {
@@ -138,6 +139,8 @@ const Container = styled('div')`
 const CustomEvent = ({ event }) => {
 	const isFuture = isBefore(new Date(event.startTime), addHours(new Date(), 2))
 	const isPast = isAfter(subHours(new Date(), 1), new Date(event.endTime))
+
+	if (event.__typename === 'BlockedTime') return <BlockedTime event={event} />
 
 	const name = event.customer
 		? `${getCustomerField(event.customer, 'firstName') || '(No Name)'} ${

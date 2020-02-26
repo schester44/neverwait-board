@@ -1,4 +1,5 @@
 import React from 'react'
+import { produce } from 'immer'
 import { useSubscription } from '@apollo/react-hooks'
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -15,8 +16,10 @@ const localizer = momentLocalizer(moment)
 
 const startAccessor = event => new Date(event.startTime)
 const endAccessor = event => new Date(event.endTime)
+
 const resourceAccessor = event => {
-	return event?.employee?.id
+	// employeeId is for blocked times
+	return event.employeeId || event?.employee?.id
 }
 
 const noop = () => null
