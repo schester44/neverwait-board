@@ -1,10 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@apollo/react-hooks'
-import { locationQuery } from './queries'
 import { startOfDay, endOfDay } from 'date-fns'
+
 import Calendar from './Calendar'
 import Clock from './Clock'
+
+import { locationQuery, employeeSchedulesQuery } from './queries'
+
+import { getScheduledStaff } from '../../helpers/getScheduledStaff'
 
 const Container = styled('div')`
 	color: white;
@@ -36,33 +40,64 @@ const Placeholder = styled('div')`
 `
 
 const Board = () => {
-	const [{ currentTime, startTime, endTime }, setState] = React.useState({
+	const [{ currentTime, startTime, endTime, scheduledStaff }, setState] = React.useState({
 		currentTime: new Date(),
 		startTime: startOfDay(new Date()),
-		endTime: endOfDay(new Date())
+		endTime: endOfDay(new Date()),
+		scheduledStaff: []
 	})
 
 	// TODO: This could cause the useSubscription to miss an update
 	React.useEffect(() => {
 		const timer = window.setInterval(() => {
+			let date = new Date()
+
 			setState({
-				currentTime: new Date(),
-				startTime: startOfDay(new Date()),
-				endTime: endOfDay(new Date())
+				currentTime: date,
+				startTime: startOfDay(date),
+				endTime: endOfDay(date)
 			})
 		}, 60 * 1000 * 5)
 
 		return () => window.clearInterval(timer)
 	}, [])
 
-	const { data: { location } = {}, loading } = useQuery(locationQuery, {
+	const { data, loading } = useQuery(locationQuery, {
 		variables: {
 			startTime,
 			endTime
 		}
 	})
 
-	if (loading) return <Placeholder>Loading...</Placeholder>
+	const location = data?.location
+	const locationEmployees = location?.employees
+
+	const { data: scheduleData, loading: schedulesLoading } = useQuery(employeeSchedulesQuery, {
+		skip: !location?.id,
+		fetchPolicy: 'cache-and-network',
+		variables: {
+			locationId: location?.id,
+			startDate: startTime,
+			endDate: endTime
+		}
+	})
+
+	React.useEffect(() => {
+		if (!locationEmployees || !scheduleData) return
+
+		setState(prev => ({
+			...prev,
+			scheduledStaff: getScheduledStaff({
+				date: currentTime,
+				employeeSchedules: scheduleData.employees,
+				employees: locationEmployees
+			})
+		}))
+	}, [scheduleData, locationEmployees, currentTime])
+
+	if (loading || !location || !scheduleData || schedulesLoading) {
+		return <Placeholder>Loading...</Placeholder>
+	}
 
 	const logout = () => {
 		localStorage.removeItem('nw-board-sess')
@@ -84,7 +119,7 @@ const Board = () => {
 					startTime={startTime}
 					endTime={endTime}
 					locationId={location.id}
-					employees={location.employees}
+					employees={scheduledStaff}
 					appointments={[...location.blockedTimes, ...location.appointments]}
 				/>
 			) : (

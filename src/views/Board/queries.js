@@ -115,3 +115,23 @@ export const locationQuery = gql`
 		}
 	}
 `
+
+export const employeeSchedulesQuery = gql`
+	query employees($locationId: ID!, $startDate: DateTime!, $endDate: DateTime!) {
+		employees(input: { where: { locationId: $locationId, bookingEnabled: true } }) {
+			id
+			schedule_ranges(
+				input: { locationId: $locationId, where: { start_date: $startDate, end_date: $endDate } }
+			) {
+				day_of_week
+				schedule_shifts {
+					start_time
+					end_time
+					acceptingAppointments
+					acceptingWalkins
+					acceptingCheckins
+				}
+			}
+		}
+	}
+`
