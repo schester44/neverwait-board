@@ -10,7 +10,6 @@ export default styled('div')`
 	.rbc-header {
 		padding: 5px;
 		font-size: 28px;
-		color: white;
 		font-family: Domus;
 	}
 
@@ -54,16 +53,16 @@ export default styled('div')`
 	}
 
 	.rbc-today .rbc-timeslot-group {
-		border-bottom: 1px solid rgba(71, 74, 76, 0.8) !important;
+		border-bottom: 1px solid rgba(230, 230, 230, 0.8) !important;
 	}
 
 	.rbc-time-content > * + * > * {
-		border-left: 1px solid rgba(71, 74, 76, 0.4);
+		border-left: 1px solid rgba(230, 230, 230, 1);
 	}
 
 	.rbc-time-view-resources .rbc-time-gutter {
 		z-index: inherit;
-		border-right: 1px solid rgba(71, 74, 76, 0.4) !important;
+		border-right: 1px solid rgba(230, 230, 230, 1) !important;
 	}
 
 	.rbc-time-header-gutter,
@@ -86,7 +85,6 @@ export default styled('div')`
 		position: relative;
 		top: -12px;
 		font-weight: 500;
-		color: #fff;
 		font-size: 18px;
 	}
 
@@ -95,7 +93,7 @@ export default styled('div')`
 	}
 
 	.rbc-day-slot .rbc-time-slot {
-		border-top: 1px solid rgba(71, 74, 76, 0.4);
+		border-top: 1px solid rgba(230, 230, 230, 1);
 	}
 
 	.rbc-time-slot {
@@ -104,8 +102,6 @@ export default styled('div')`
 
 	.rbc-event {
 		min-height: 1px !important;
-		width: calc(100% - 40px) !important;
-		left: 20px !important;
 		border: none !important;
 		margin: 0 2px;
 		border-radius: 4px;

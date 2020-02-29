@@ -1,8 +1,8 @@
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
-import { getCustomerField } from '../../helpers/getCustomerInfo'
+import { getCustomerField } from '../../../helpers/getCustomerInfo'
 
-import { isAfter, format, isBefore, addHours, subHours } from 'date-fns'
+import { isAfter, format, isBefore, addHours, subHours, isWithinInterval } from 'date-fns'
 import BlockedTime from './BlockedTime'
 
 const fadeIn = keyframes`
@@ -68,7 +68,14 @@ const bigStyles = ({ isBig }) =>
 const pastStyles = ({ isPast }) =>
 	isPast &&
 	css`
-		background: rgba(55, 59, 60, 1);
+		opacity: 0.4;
+	`
+
+const currentStyles = ({ isCurrent }) =>
+	isCurrent &&
+	css`
+		background: rgba(79, 170, 159, 1);
+		color: rgba(0, 80, 69, 1);
 	`
 
 const Container = styled('div')`
@@ -80,9 +87,9 @@ const Container = styled('div')`
 	padding: 0 20px;
 	overflow: hidden;
 	line-height: 28px;
-	background: rgba(85, 82, 181, 1);
+	background: rgba(101, 110, 222, 1);
+	color: rgba(11, 20, 102, 1);
 	animation: ${fadeIn} 0.5s ease forwards;
-	border-radius: 4px;
 
 	.details {
 		display: flex;
@@ -134,6 +141,7 @@ const Container = styled('div')`
 	${sourceStyles};
 	${bigStyles};
 	${pastStyles};
+	${currentStyles};
 `
 
 const CustomEvent = ({ event }) => {
@@ -152,6 +160,10 @@ const CustomEvent = ({ event }) => {
 
 	return (
 		<Container
+			isCurrent={isWithinInterval(new Date(), {
+				start: new Date(event.startTime),
+				end: new Date(event.endTime)
+			})}
 			isPast={isAfter(new Date(), new Date(event.endTime))}
 			isBig={event.duration >= 15}
 			duration={event.duration}

@@ -16,6 +16,7 @@ export const appointmentsSubscription = gql`
 				appointment {
 					id
 					status
+					price
 					duration
 					startTime
 					endTime
@@ -53,11 +54,12 @@ export const appointmentsSubscription = gql`
 export const locationQuery = gql`
 	query location($startTime: DateTime!, $endTime: DateTime!) {
 		location {
-			company {
-				name
-			}
 			id
 			name
+			company {
+				id
+				name
+			}
 			blockedTimes(
 				input: { where: { startTime: { gte: $startTime }, endTime: { lte: $endTime } } }
 			) {

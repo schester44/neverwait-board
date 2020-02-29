@@ -1,14 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
+import { produce } from 'immer'
 import { useQuery } from '@apollo/react-hooks'
 import { startOfDay, endOfDay } from 'date-fns'
 
-import Calendar from './Calendar'
+import Calendar from './Calendar/index'
 import Clock from './Clock'
 
-import { locationQuery, employeeSchedulesQuery } from './queries'
+import { locationQuery, employeeSchedulesQuery, appointmentsSubscription } from './queries'
 
 import { getScheduledStaff } from '../../helpers/getScheduledStaff'
+import { playNewSound, playDeletedSound } from '../../helpers/sound'
 
 const Container = styled('div')`
 	color: white;
@@ -17,16 +19,16 @@ const Container = styled('div')`
 		position: fixed;
 		bottom: 20px;
 		right: 20px;
-		background: rgba(45, 48, 49, 0.4);
-		border-radius: 10px;
+		background: rgba(255, 255, 255, 1);
+		border-radius: 50px;
 		font-family: Domus;
-		color: rgba(237, 209, 129, 1);
+		color: rgba(102, 113, 215, 1.0);
 		font-size: 18px;
-		padding: 10px;
+		padding: 10px 30px;
 		text-align: right;
 		line-height: 1;
 		z-index: 9999;
-		box-shadow: 0px 2px 3px rgba(32, 32, 32, 0.2);
+		box-shadow: 0px 5px 8px -4px rgba(32, 32, 32, 0.2);
 	}
 `
 
@@ -47,7 +49,7 @@ const Board = () => {
 		scheduledStaff: []
 	})
 
-	// TODO: This could cause the useSubscription to miss an update
+	// TODO: Could this possibly cause the useSubscription to miss an update?
 	React.useEffect(() => {
 		const timer = window.setInterval(() => {
 			let date = new Date()
@@ -62,7 +64,7 @@ const Board = () => {
 		return () => window.clearInterval(timer)
 	}, [])
 
-	const { data, loading } = useQuery(locationQuery, {
+	const { data, loading, subscribeToMore } = useQuery(locationQuery, {
 		variables: {
 			startTime,
 			endTime
@@ -71,6 +73,74 @@ const Board = () => {
 
 	const location = data?.location
 	const locationEmployees = location?.employees
+
+	React.useEffect(() => {
+		if (!location) return
+
+		const unsubscribeFromSubscription = subscribeToMore({
+			document: appointmentsSubscription,
+			variables: {
+				locationId: location.id
+			},
+			updateQuery: (previousQueryResult, { subscriptionData }) => {
+				if (!subscriptionData.data?.SchedulingChange) return
+
+				const { payload, action } = subscriptionData.data.SchedulingChange
+				const { appointment, blockedTime } = payload
+
+				const isDeleted = appointment
+					? appointment.status === 'deleted' ||
+					  appointment.status === 'canceled' ||
+					  appointment.status === 'noshow'
+					: action === 'DELETED'
+
+				if (appointment && action === 'CREATED') {
+					playNewSound()
+				}
+
+				if (appointment && isDeleted) {
+					playDeletedSound()
+				}
+
+				// No need to do anything since Apollo handles updates
+				if (action === 'UPDATED' && !isDeleted) return
+
+				return produce(previousQueryResult, draftState => {
+					const appointments = draftState.location.appointments
+					const blockedTimes = draftState.location.blockedTimes
+
+					if (appointment) {
+						if (isDeleted) {
+							const indexOfDeletedAppointment = appointments.findIndex(
+								appt => Number(appt.id) === Number(appointment.id)
+							)
+
+							appointments.splice(indexOfDeletedAppointment, 1)
+						} else {
+							appointments.push(appointment)
+						}
+					}
+
+
+					if (blockedTime) {
+						if (isDeleted) {
+							const indexOfDeletedBlockedTime = blockedTimes.findIndex(
+								({ id }) => Number(id) === Number(blockedTime.id)
+							)
+
+							blockedTimes.splice(indexOfDeletedBlockedTime, 1)
+						} else {
+							blockedTimes.push(blockedTime)
+						}
+					}
+				})
+			}
+		})
+
+		return () => {
+			unsubscribeFromSubscription()
+		}
+	}, [subscribeToMore, location])
 
 	const { data: scheduleData, loading: schedulesLoading } = useQuery(employeeSchedulesQuery, {
 		skip: !location?.id,
@@ -113,7 +183,7 @@ const Board = () => {
 				</div>
 			</div>
 
-			{location?.employees ? (
+			{scheduledStaff ? (
 				<Calendar
 					currentTime={currentTime}
 					startTime={startTime}
@@ -123,7 +193,7 @@ const Board = () => {
 					appointments={[...location.blockedTimes, ...location.appointments]}
 				/>
 			) : (
-				<Placeholder>Error</Placeholder>
+				<Placeholder>No Scheduled Staff</Placeholder>
 			)}
 		</Container>
 	)
