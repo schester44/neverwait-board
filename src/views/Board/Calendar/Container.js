@@ -5,7 +5,7 @@ export default styled('div')`
 	height: 100vh;
 	overflow: hidden;
 
-	color: black;
+	color: white;
 
 	.rbc-header {
 		padding: 5px;
@@ -53,16 +53,16 @@ export default styled('div')`
 	}
 
 	.rbc-today .rbc-timeslot-group {
-		border-bottom: 1px solid rgba(230, 230, 230, 0.8) !important;
+		border-bottom: 1px solid rgba(32, 32, 32, 0.8) !important;
 	}
 
 	.rbc-time-content > * + * > * {
-		border-left: 1px solid rgba(230, 230, 230, 1);
+		border-left: 1px solid rgba(80, 80, 80, 1);
 	}
 
 	.rbc-time-view-resources .rbc-time-gutter {
 		z-index: inherit;
-		border-right: 1px solid rgba(230, 230, 230, 1) !important;
+		border-right: 1px solid rgba(80, 80, 80, 1) !important;
 	}
 
 	.rbc-time-header-gutter,
@@ -93,7 +93,7 @@ export default styled('div')`
 	}
 
 	.rbc-day-slot .rbc-time-slot {
-		border-top: 1px solid rgba(230, 230, 230, 1);
+		border-top: 1px solid rgba(80, 80, 80, 1);
 	}
 
 	.rbc-time-slot {

@@ -17,7 +17,7 @@ const Clock = () => {
 			style={{
 				textTransform: 'lowercase',
 				fontFamily: 'sans-serif',
-				color: 'rgba(32,32,32,1)',
+				color: 'rgba(255,255,255,1)',
 				fontSize: 14,
 				fontWeight: 700
 			}}

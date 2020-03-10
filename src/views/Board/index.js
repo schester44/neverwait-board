@@ -19,10 +19,10 @@ const Container = styled('div')`
 		position: fixed;
 		bottom: 20px;
 		right: 20px;
-		background: rgba(255, 255, 255, 1);
-		border-radius: 50px;
+		background: rgba(80, 80, 80, 1);
+		border-radius: 8px;
 		font-family: Domus;
-		color: rgba(102, 113, 215, 1.0);
+		color: rgba(255, 255, 255, 1);
 		font-size: 18px;
 		padding: 10px 30px;
 		text-align: right;
@@ -121,7 +121,6 @@ const Board = () => {
 						}
 					}
 
-
 					if (blockedTime) {
 						if (isDeleted) {
 							const indexOfDeletedBlockedTime = blockedTimes.findIndex(
@@ -141,6 +140,16 @@ const Board = () => {
 			unsubscribeFromSubscription()
 		}
 	}, [subscribeToMore, location])
+
+	console.log({
+		skip: !location?.id,
+		fetchPolicy: 'cache-and-network',
+		variables: {
+			locationId: location?.id,
+			startDate: startTime,
+			endDate: endTime
+		}
+	})
 
 	const { data: scheduleData, loading: schedulesLoading } = useQuery(employeeSchedulesQuery, {
 		skip: !location?.id,

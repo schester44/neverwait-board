@@ -75,7 +75,7 @@ const currentStyles = ({ isCurrent }) =>
 	isCurrent &&
 	css`
 		background: rgba(79, 170, 159, 1);
-		color: rgba(0, 80, 69, 1);
+		color: rgba(252, 252, 252, 1);
 	`
 
 const Container = styled('div')`
@@ -88,7 +88,7 @@ const Container = styled('div')`
 	overflow: hidden;
 	line-height: 28px;
 	background: rgba(101, 110, 222, 1);
-	color: rgba(11, 20, 102, 1);
+	color: rgba(255, 255, 255, 1);
 	animation: ${fadeIn} 0.5s ease forwards;
 
 	.details {
