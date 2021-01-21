@@ -15,7 +15,7 @@
 		"date-fns": "^2.10.0",
 		"graphql": "^14.6.0",
 		"graphql-tag": "^2.10.3",
-		"immer": "^5.3.6",
+		"immer": "^8.0.1",
 		"jwt-decode": "^2.2.0",
 		"moment": "^2.24.0",
 		"react": "^16.13.0",
